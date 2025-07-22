@@ -131,5 +131,13 @@ public sealed class Pet : Entity<Guid>
         _paymentDetails.Add(paymentDetail);
         return Result.Success();
     }
+
+    public Result RemovePaymentDetail(PaymentDetail paymentDetail)
+    {
+        if  (!_paymentDetails.Contains(paymentDetail))
+            return Result.Failure("Payment detail does not exist");
+        return _paymentDetails.Remove(paymentDetail) ? Result.Success() : Result.Failure("Error while removing payment detail");
+    }
+        
 }
 

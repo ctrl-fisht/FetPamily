@@ -76,6 +76,14 @@ public sealed class Volunteer : Entity<Guid>
         return Result.Success();
     }
 
+    public Result RemovePet(Pet pet)
+    {
+        if (_pets.All(p => p.Id != pet.Id))
+            return  Result.Failure<Pet>("Pet does not exists (id)");
+        
+        return _pets.Remove(pet) ? Result.Success() : Result.Failure("Error while removing pet");
+    }
+
     public Result AddSocialNetwork(SocialNetwork socialNetwork)
     {
         if (_socialNetworks.Contains(socialNetwork))
@@ -85,6 +93,13 @@ public sealed class Volunteer : Entity<Guid>
         return Result.Success();
     }
 
+    public Result RemoveSocialNetwork(SocialNetwork socialNetwork)
+    {
+        if  (!_socialNetworks.Contains(socialNetwork))
+            return Result.Failure("Social network does not exists");
+        return _socialNetworks.Remove(socialNetwork)  ? Result.Success() : Result.Failure("Error while removing social network");;
+    }
+
     public Result AddPaymentDetail(PaymentDetail paymentDetail)
     {
         if (_paymentDetails.Contains(paymentDetail))
@@ -92,6 +107,13 @@ public sealed class Volunteer : Entity<Guid>
         
         _paymentDetails.Add(paymentDetail);
         return Result.Success();
+    }
+    
+    public Result RemovePaymentDetail(PaymentDetail paymentDetail)
+    {
+        if  (!_paymentDetails.Contains(paymentDetail))
+            return Result.Failure("Payment detail does not exist");
+        return _paymentDetails.Remove(paymentDetail) ? Result.Success() : Result.Failure("Error while removing payment detail");
     }
     
 }
