@@ -1,12 +1,15 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace FetPamily.Domain.Species;
+namespace FetPamily.Domain.Species.Entities;
 
 public sealed class Species : Entity<Guid>
 {
-    private readonly List<Breed> _breeds = new List<Breed>();
+    public const int MAX_NAME_LENGTH = 200;
     
-    public string Name { get; set; }
+    
+    private readonly List<Breed> _breeds = new List<Breed>();
+    public string Name { get; private set; }
+    
     public IReadOnlyList<Breed> Breeds => _breeds;
 
     private Species(Guid id, string name)

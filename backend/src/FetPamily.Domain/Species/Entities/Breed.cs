@@ -1,11 +1,19 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace FetPamily.Domain.Species;
+namespace FetPamily.Domain.Species.Entities;
 
 public sealed class Breed : Entity<Guid>
 {
+    public const int MAX_NAME_LENGTH = 200;
+    
     public string Name { get; set; }
-
+    
+    
+    public Guid SpeciesId { get; private set; }
+    
+    // navigation property
+    public Species Species { get; set; }
+    
     private Breed(Guid id, string name)
     {
         Name = name;

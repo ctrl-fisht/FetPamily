@@ -1,26 +1,26 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace FetPamily.Domain.Pets;
+namespace FetPamily.Domain.Volunteers.PetsValueObjects;
 
 public record PetInfo
 {
-    public string SpeciesId { get;}
-    public string BreedId { get;}
+    public Guid SpeciesId { get;}
+    public Guid BreedId { get;}
     public string Color { get;}
     
-    private PetInfo(string speciesId, string breedId, string color)
+    private PetInfo(Guid speciesId, Guid breedId, string color)
     {
         SpeciesId = speciesId;
         BreedId = breedId;
         Color = color;
     }
 
-    public static Result<PetInfo> Create(string speciesId, string breedId, string color)
+    public static Result<PetInfo> Create(Guid speciesId, Guid breedId, string color)
     {
-        if (string.IsNullOrWhiteSpace(speciesId))
+        if (speciesId == Guid.Empty)
             return Result.Failure<PetInfo>("SpeciesId cannot be empty");
         
-        if (string.IsNullOrWhiteSpace(breedId))
+        if (breedId == Guid.Empty)
             return Result.Failure<PetInfo>("BreedId cannot be empty");
         
         if (string.IsNullOrWhiteSpace(color))
