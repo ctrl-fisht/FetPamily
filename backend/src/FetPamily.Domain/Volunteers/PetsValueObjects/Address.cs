@@ -29,7 +29,7 @@ public record Address
             return Errors.General.ValidationMaxLength("city", Constants.ADDRESS_MAX_CITY_LENGTH);
 
         if (!Regex.IsMatch(city, @"^[a-zA-Zа-яА-ЯёЁ\s\-]+$"))
-            return Errors.General.ValidationInvalidFormat("city");
+            return Errors.General.ValidationInvalidFormat("city", "Москва, Санкт-Петербург");
         
         
         // regex: буквы, цифры, пробелы, дефисы
@@ -40,7 +40,7 @@ public record Address
             return Errors.General.ValidationMaxLength("street", Constants.ADDRESS_MAX_STREET_LENGTH);
 
         if (!Regex.IsMatch(street, @"^[\wа-яА-ЯёЁ\s\-\.]+$"))
-            return Errors.General.ValidationInvalidFormat("street");
+            return Errors.General.ValidationInvalidFormat("street", "Пушкина, 78-Бригады");
 
         
         // буквы, цифры (напр. 12А, 5Б)
@@ -51,7 +51,7 @@ public record Address
             return Errors.General.ValidationMaxLength("building", Constants.ADDRESS_MAX_BUILDING_LENGTH);
 
         if (!Regex.IsMatch(building, @"^[\wа-яА-ЯёЁ\-]+$"))
-            return Errors.General.ValidationInvalidFormat("building");
+            return Errors.General.ValidationInvalidFormat("building", "12А, 5Б");
         
         
         

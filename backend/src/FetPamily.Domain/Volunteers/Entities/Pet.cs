@@ -2,6 +2,7 @@
 using CSharpFunctionalExtensions;
 using FetPamily.Domain.Shared;
 using FetPamily.Domain.Volunteers.PetsValueObjects;
+using FetPamily.Domain.Volunteers.SharedValueObjects;
 
 namespace FetPamily.Domain.Volunteers.Entities;
 
@@ -16,7 +17,7 @@ public sealed class Pet : Entity<Guid>
     public Address Address { get; private set; }
     public decimal Weight { get; private set; }
     public decimal Height { get; private set; }
-    public string PhoneNumber { get; private set; }
+    public PhoneNumber PhoneNumber { get; private set; }
     public bool IsNeutered  { get; private set; }
     public DateTime DateOfBirth { get; private set; }
     public bool IsVaccinated { get; private set; }
@@ -40,7 +41,7 @@ public sealed class Pet : Entity<Guid>
         Address address,
         decimal weight,
         decimal height,
-        string phoneNumber,
+        PhoneNumber phoneNumber,
         bool isNeutered,
         DateTime dateOfBirth,
         bool isVaccinated,
@@ -74,7 +75,7 @@ public sealed class Pet : Entity<Guid>
         Address address,
         decimal weight,
         decimal height,
-        string phoneNumber,
+        PhoneNumber phoneNumber,
         bool isNeutered,
         DateTime dateOfBirth,
         bool isVaccinated,
@@ -94,6 +95,12 @@ public sealed class Pet : Entity<Guid>
         
         if (name.Length > Constants.PET_MAX_NAME_LENGTH)
             return Errors.General.ValidationMaxLength("name", Constants.PET_MAX_NAME_LENGTH);
+        
+        if (!Regex.IsMatch(name, @"^\p{L}+$"))
+        {
+            return Errors.General.ValidationInvalidFormat("name", "Барсик");
+        }
+        
         // description 
         if (string.IsNullOrWhiteSpace(description))
             return Errors.General.ValidationNotNull("description");
@@ -115,12 +122,6 @@ public sealed class Pet : Entity<Guid>
         if (height > Constants.PET_MAX_HEIGHT)
             return Errors.General.ValidationGreaterThan("height", Constants.PET_MAX_HEIGHT);
         
-        // phoneNumber
-        if (string.IsNullOrWhiteSpace(phoneNumber))
-            return Errors.General.ValidationNotNull("phoneNumber");
-
-        if (!Regex.IsMatch(phoneNumber, @"^\+?\d+$"))
-            return Errors.General.ValidationInvalidFormat("phoneNumber");
         
         // dateOfBirth
         if (dateOfBirth > DateTime.UtcNow)

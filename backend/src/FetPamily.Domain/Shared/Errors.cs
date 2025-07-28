@@ -13,8 +13,8 @@ public static class Errors
         public static Error ValidationNotNull(string name) => 
             Error.ValidationError("value.is.invalid", $"parameter '{name}' cannot be empty");
         
-        public static Error ValidationInvalidFormat(string name) =>
-            Error.ValidationError("value.is.invalid", $"parameter '{name}' is invalid");
+        public static Error ValidationInvalidFormat(string name, string format) =>
+            Error.ValidationError("value.is.invalid", $"parameter '{name}' format is invalid (example '{format}')");
         
         public static Error ValidationGreaterThan(string name, int min) =>
             Error.ValidationError("value.is.invalid", $"parameter '{name}' must be greater than {min}");
