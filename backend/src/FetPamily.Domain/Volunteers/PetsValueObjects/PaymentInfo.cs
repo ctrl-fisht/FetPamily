@@ -1,4 +1,6 @@
-﻿namespace FetPamily.Domain.Volunteers.PetsValueObjects;
+﻿using FetPamily.Domain.Volunteers.SharedValueObjects;
+
+namespace FetPamily.Domain.Volunteers.PetsValueObjects;
 
 public record PaymentInfo
 {

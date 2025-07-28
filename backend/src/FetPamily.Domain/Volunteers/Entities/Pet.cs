@@ -1,16 +1,12 @@
 ﻿using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
+using FetPamily.Domain.Shared;
 using FetPamily.Domain.Volunteers.PetsValueObjects;
 
 namespace FetPamily.Domain.Volunteers.Entities;
 
 public sealed class Pet : Entity<Guid>
 {
-    public const int MAX_NAME_LENGTH = 100;
-    public const int MAX_DESCRIPTION_LENGTH = 2000;
-    public const int MAX_WEIGHT = 100;
-    public const int MAX_HEIGHT = 10000; // сантиметры
-    
     public Guid VolunteerId { get; private set; }
     public string Name { get; private set; }
     public string Description { get; private set; }
@@ -96,26 +92,29 @@ public sealed class Pet : Entity<Guid>
         if (string.IsNullOrWhiteSpace(name))
             return Result.Failure<Pet>("Name cannot be empty");
         
-        if (name.Length > MAX_NAME_LENGTH)
-            return Result.Failure<Pet>($"Name cannot be longer than {MAX_NAME_LENGTH} symbols.");
+        if (name.Length > Constants.PET_MAX_NAME_LENGTH)
+            return Result.Failure<Pet>($"Name cannot be longer than {Constants.PET_MAX_NAME_LENGTH} symbols.");
         
         // description 
         if (string.IsNullOrWhiteSpace(description))
             return Result.Failure<Pet>("Description cannot be empty");
         
-        if (description.Length > MAX_DESCRIPTION_LENGTH)
-            return Result.Failure<Pet>($"Description cannot be longer than {MAX_DESCRIPTION_LENGTH} symbols.");
+        if (description.Length > Constants.PET_MAX_DESCRIPTION_LENGTH)
+            return Result.Failure<Pet>($"Description cannot be longer than {Constants.PET_MAX_DESCRIPTION_LENGTH} symbols.");
         
         // weight 
         if (weight < 0 )
             return Result.Failure<Pet>("Weight cannot be negative");
         
-        if (weight > MAX_WEIGHT)
-            return Result.Failure<Pet>($"Weight cannot be greater than {MAX_WEIGHT} symbols.");
+        if (weight > Constants.PET_MAX_WEIGHT)
+            return Result.Failure<Pet>($"Weight cannot be greater than {Constants.PET_MAX_WEIGHT} symbols.");
         
         // height 
         if (height < 0)
             return Result.Failure<Pet>("Height cannot be negative");
+        
+        if (height > Constants.PET_MAX_HEIGHT)
+            return Result.Failure<Pet>($"Height cannot be greater than {Constants.PET_MAX_HEIGHT} symbols.");
         
         // phoneNumber
         if (string.IsNullOrWhiteSpace(phoneNumber))

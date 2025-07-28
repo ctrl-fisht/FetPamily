@@ -1,4 +1,5 @@
-﻿using FetPamily.Domain.Volunteers.VolunteersValueObjects;
+﻿using FetPamily.Domain.Shared;
+using FetPamily.Domain.Volunteers.VolunteersValueObjects;
 using FetPamily.Domain.Volunteers.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -29,17 +30,17 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         
         builder.Property(v => v.FullName)
             .HasColumnName("full_name")
-            .HasMaxLength(Volunteer.MAX_FULLNAME_LENGTH)
+            .HasMaxLength(Constants.VOLUNTEER_MAX_FULLNAME_LENGTH)
             .IsRequired();
 
         builder.Property(v => v.Email)
             .HasColumnName("email")
-            .HasMaxLength(Volunteer.MAX_EMAIL_LENGTH)
+            .HasMaxLength(Constants.VOLUNTEER_MAX_EMAIL_LENGTH)
             .IsRequired();
 
         builder.Property(v => v.Description)
             .HasColumnName("description")
-            .HasMaxLength(Volunteer.MAX_DESCRIPTION_LENGTH);
+            .HasMaxLength(Constants.VOLUNTEER_MAX_DESCRIPTION_LENGTH);
 
         builder.Property(v => v.Experience)
             .HasColumnName("experience");
@@ -57,17 +58,17 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 pdb.Property(pd => pd.Name)
                     .HasColumnName("payment_name")
                     .IsRequired()
-                    .HasMaxLength(PaymentDetail.MAX_NAME_LENGTH);
+                    .HasMaxLength(Constants.PAYMENT_MAX_NAME_LENGTH);
 
                 pdb.Property(pd => pd.Description)
                     .HasColumnName("payment_description")
                     .IsRequired()
-                    .HasMaxLength(PaymentDetail.MAX_DESCRIPTION_LENGTH);
+                    .HasMaxLength(Constants.PAYMENT_MAX_DESCRIPTION_LENGTH);
 
                 pdb.Property(pd => pd.Value)
                     .HasColumnName("payment_value")
                     .IsRequired()
-                    .HasMaxLength(PaymentDetail.MAX_VALUE_LENGTH);
+                    .HasMaxLength(Constants.PAYMENT_MAX_VALUE_LENGTH);
                 ;
             });
 

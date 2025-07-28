@@ -1,4 +1,5 @@
-﻿using FetPamily.Domain.Volunteers.Entities;
+﻿using FetPamily.Domain.Shared;
+using FetPamily.Domain.Volunteers.Entities;
 using FetPamily.Domain.Volunteers.PetsValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -16,11 +17,11 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             // 0 < weight < MAX_WEIGHT
             tb.HasCheckConstraint(
                 "CK_pets_weight",
-                $"\"weight\" > 0 AND \"weight\" <= {Pet.MAX_WEIGHT}");
+                $"\"weight\" > 0 AND \"weight\" <= {Constants.PET_MAX_WEIGHT}");
             
             // 0 < height < MAX_HEIGHT
             tb.HasCheckConstraint("CK_pets_height",
-                $"\"height\" > 0 AND \"height\" <= {Pet.MAX_HEIGHT}");
+                $"\"height\" > 0 AND \"height\" <= {Constants.PET_MAX_HEIGHT}");
 
             // phone_number regex check 
             tb.HasCheckConstraint("CK_pets_phone_number",
@@ -58,12 +59,12 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property(p => p.Name)
             .HasColumnName("name")
             .IsRequired()
-            .HasMaxLength(Pet.MAX_NAME_LENGTH);
+            .HasMaxLength(Constants.PET_MAX_NAME_LENGTH);
 
         builder.Property(p => p.Description)
             .HasColumnName("description")
             .IsRequired()
-            .HasMaxLength(Pet.MAX_DESCRIPTION_LENGTH);
+            .HasMaxLength(Constants.PET_MAX_DESCRIPTION_LENGTH);
 
         builder.ComplexProperty(p => p.PetInfo, pib =>
         {
@@ -95,17 +96,17 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 pdb.Property(pd => pd.Name)
                     .HasColumnName("payment_name")
                     .IsRequired()
-                    .HasMaxLength(PaymentDetail.MAX_NAME_LENGTH);
+                    .HasMaxLength(Constants.PAYMENT_MAX_NAME_LENGTH);
                 
                 pdb.Property(pd => pd.Description)
                     .HasColumnName("payment_description")
                     .IsRequired()
-                    .HasMaxLength(PaymentDetail.MAX_DESCRIPTION_LENGTH);
+                    .HasMaxLength(Constants.PAYMENT_MAX_DESCRIPTION_LENGTH);
                 
                 pdb.Property(pd => pd.Value)
                     .HasColumnName("payment_value")
                     .IsRequired()
-                    .HasMaxLength(PaymentDetail.MAX_VALUE_LENGTH);;
+                    .HasMaxLength(Constants.PAYMENT_MAX_VALUE_LENGTH);;
             });
         });
         
@@ -114,17 +115,17 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             ab.Property(a => a.City)
                 .HasColumnName("address_city")
                 .IsRequired()
-                .HasMaxLength(Address.MAX_CITY_LENGTH);
+                .HasMaxLength(Constants.ADDRESS_MAX_CITY_LENGTH);
             
             ab.Property(a => a.Street)
                 .HasColumnName("address_street")
                 .IsRequired()
-                .HasMaxLength(Address.MAX_STREET_LENGTH);
+                .HasMaxLength(Constants.ADDRESS_MAX_STREET_LENGTH);
             
             ab.Property(a => a.Building)
                 .HasColumnName("address_building")
                 .IsRequired()
-                .HasMaxLength(Address.MAX_BUILDING_LENGTH);
+                .HasMaxLength(Constants.ADDRESS_MAX_BUILDING_LENGTH);
 
             ab.Property(a => a.ApartmentNumber)
                 .HasColumnName("address_apartment_number");

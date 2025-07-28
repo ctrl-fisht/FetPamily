@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
+using FetPamily.Domain.Shared;
 using FetPamily.Domain.Volunteers.PetsValueObjects;
 using FetPamily.Domain.Volunteers.VolunteersValueObjects;
 
@@ -7,10 +8,6 @@ namespace FetPamily.Domain.Volunteers.Entities;
 
 public sealed class Volunteer : Entity<Guid>
 {
-    public const int MAX_FULLNAME_LENGTH = 150;
-    public const int MAX_EMAIL_LENGTH = 320;
-    public const int MAX_DESCRIPTION_LENGTH = 2000;
-    
     private readonly List<Pet> _pets = new List<Pet>();
     
     public string FullName { get; private set; }
@@ -40,15 +37,30 @@ public sealed class Volunteer : Entity<Guid>
     {
         if  (string.IsNullOrWhiteSpace(fullName))
             return Result.Failure<Volunteer>("Volunteer name cannot be empty");
+
+        if (fullName.Length > Constants.VOLUNTEER_MAX_FULLNAME_LENGTH)
+            return Result.Failure<Volunteer>($"Volunteer name is greater than {Constants.VOLUNTEER_MAX_FULLNAME_LENGTH}");
+        
+        
         
         if (string.IsNullOrWhiteSpace(email))
             return Result.Failure<Volunteer>("Volunteer email cannot be empty");
         
+        if (email.Length > Constants.VOLUNTEER_MAX_EMAIL_LENGTH)
+            return Result.Failure<Volunteer>($"Volunteer email length is greater than {Constants.VOLUNTEER_MAX_EMAIL_LENGTH}");
+        
         if (!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
             return Result.Failure<Volunteer>("Invalid email address");
         
+        
+        
         if (string.IsNullOrWhiteSpace(description))
             return Result.Failure<Volunteer>("Volunteer description cannot be empty");
+        
+        if (description.Length > Constants.VOLUNTEER_MAX_DESCRIPTION_LENGTH)
+            return Result.Failure<Volunteer>("Volunteer description is too long");
+        
+        
         
         if  (experience <= 0)
             return Result.Failure<Volunteer>("Volunteer experience cannot be negative");

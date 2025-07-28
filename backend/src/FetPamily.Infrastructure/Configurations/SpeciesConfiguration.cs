@@ -1,4 +1,5 @@
-﻿using FetPamily.Domain.Species.Entities;
+﻿using FetPamily.Domain.Shared;
+using FetPamily.Domain.Species.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -22,7 +23,7 @@ public class SpeciesConfiguration : IEntityTypeConfiguration<Species>
         builder.Property(s => s.Name)
             .HasColumnName("name")
             .IsRequired()
-            .HasMaxLength(Species.MAX_NAME_LENGTH);
+            .HasMaxLength(Constants.SPECIES_MAX_NAME_LENGTH);
         
         builder.HasMany(s => s.Breeds)
             .WithOne(b => b.Species)
