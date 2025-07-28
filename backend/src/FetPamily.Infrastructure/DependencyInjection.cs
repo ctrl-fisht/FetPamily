@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FetPamily.Application.Volunteers;
+using FetPamily.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +14,8 @@ public static class DependencyInjection
         {
             options.UseNpgsql(configuration.GetConnectionString("Postgres"));
         });
+        
+        services.AddScoped<IVolunteersRepository, VolunteersRepository>();
         return services;
     }
 }

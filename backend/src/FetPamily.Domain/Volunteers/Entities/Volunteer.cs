@@ -27,7 +27,7 @@ public sealed class Volunteer : Entity<Guid>
     private Volunteer()
     { }
     
-    private Volunteer(FullName fullName,  EmailAddress email, string description, int experience, PhoneNumber phoneNumber )
+    private Volunteer(FullName fullName,  EmailAddress email, string description, int experience, PhoneNumber phoneNumber, VolunteerDetails? volunteerDetails = null )
     {
         FullName = fullName;
         Email = email;
@@ -36,8 +36,13 @@ public sealed class Volunteer : Entity<Guid>
         PhoneNumber = phoneNumber;
     }
 
-    public static Result<Volunteer, Error> Create(FullName fullName, EmailAddress email, string description, int experience,
-        PhoneNumber phoneNumber)
+    public static Result<Volunteer, Error> Create(
+        FullName fullName,
+        EmailAddress email,
+        string description,
+        int experience,
+        PhoneNumber phoneNumber,
+        VolunteerDetails? volunteerDetails = null)
     {
         
         if (string.IsNullOrWhiteSpace(description))
@@ -57,7 +62,8 @@ public sealed class Volunteer : Entity<Guid>
             email: email,
             description: description,
             experience: experience,
-            phoneNumber: phoneNumber);
+            phoneNumber: phoneNumber,
+            volunteerDetails: volunteerDetails);
         
         return volunteer;
     }

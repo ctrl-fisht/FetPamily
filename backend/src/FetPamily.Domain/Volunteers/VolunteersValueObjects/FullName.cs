@@ -20,7 +20,7 @@ public record FullName
         if (string.IsNullOrWhiteSpace(name))
             return Errors.General.ValidationNotNull("name");
 
-        if (name.Length < Constants.VOLUNTEER_MAX_NAME_LENGTH)
+        if (name.Length > Constants.VOLUNTEER_MAX_NAME_LENGTH)
             return Errors.General.ValidationMaxLength("name", Constants.VOLUNTEER_MAX_NAME_LENGTH);
         
         if (!Regex.IsMatch(name, @"^\p{L}+$"))
