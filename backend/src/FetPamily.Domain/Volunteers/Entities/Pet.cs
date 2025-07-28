@@ -63,7 +63,7 @@ public sealed class Pet : Entity<Guid>
         HelpStatus = helpStatus;
     }
 
-    public static Result<Pet> Create(
+    public static Result<Pet, Error> Create(
         Guid id,
         Guid volunteerId,
         string name,
@@ -82,50 +82,49 @@ public sealed class Pet : Entity<Guid>
     {
         // id
         if (id == Guid.Empty)
-            return Result.Failure<Pet>("Id cannot be empty.");
+            return Errors.General.ValidationNotNull("id");
         
         // volunteer id
         if  (volunteerId == Guid.Empty)
-            return Result.Failure<Pet>("VolunteerId cannot be empty.");
+            return Errors.General.ValidationNotNull("volunteerId");
         
         // name 
         if (string.IsNullOrWhiteSpace(name))
-            return Result.Failure<Pet>("Name cannot be empty");
+            return Errors.General.ValidationNotNull("name");
         
         if (name.Length > Constants.PET_MAX_NAME_LENGTH)
-            return Result.Failure<Pet>($"Name cannot be longer than {Constants.PET_MAX_NAME_LENGTH} symbols.");
-        
+            return Errors.General.ValidationMaxLength("name", Constants.PET_MAX_NAME_LENGTH);
         // description 
         if (string.IsNullOrWhiteSpace(description))
-            return Result.Failure<Pet>("Description cannot be empty");
+            return Errors.General.ValidationNotNull("description");
         
         if (description.Length > Constants.PET_MAX_DESCRIPTION_LENGTH)
-            return Result.Failure<Pet>($"Description cannot be longer than {Constants.PET_MAX_DESCRIPTION_LENGTH} symbols.");
+            return Errors.General.ValidationMaxLength("description", Constants.PET_MAX_DESCRIPTION_LENGTH);
         
         // weight 
-        if (weight < 0 )
-            return Result.Failure<Pet>("Weight cannot be negative");
+        if (weight < 0)
+            return Errors.General.ValidationNumberNegative("weight");
         
         if (weight > Constants.PET_MAX_WEIGHT)
-            return Result.Failure<Pet>($"Weight cannot be greater than {Constants.PET_MAX_WEIGHT} symbols.");
+            return Errors.General.ValidationGreaterThan("weight", Constants.PET_MAX_WEIGHT);  
         
         // height 
         if (height < 0)
-            return Result.Failure<Pet>("Height cannot be negative");
+            return Errors.General.ValidationNumberNegative("height");
         
         if (height > Constants.PET_MAX_HEIGHT)
-            return Result.Failure<Pet>($"Height cannot be greater than {Constants.PET_MAX_HEIGHT} symbols.");
+            return Errors.General.ValidationGreaterThan("height", Constants.PET_MAX_HEIGHT);
         
         // phoneNumber
         if (string.IsNullOrWhiteSpace(phoneNumber))
-            return Result.Failure<Pet>("Phone number cannot be empty");
-        
+            return Errors.General.ValidationNotNull("phoneNumber");
+
         if (!Regex.IsMatch(phoneNumber, @"^\+?\d+$"))
-            return Result.Failure<Pet>("Phone number must contain only digits and '+'");
+            return Errors.General.ValidationInvalidFormat("phoneNumber");
         
         // dateOfBirth
         if (dateOfBirth > DateTime.UtcNow)
-            return Result.Failure<Pet>("Date of birth cannot be in the future");
+            return Errors.General.ValidationDateInFuture("dateOfBirth");
         
         var pet = new Pet(
             id: id,
@@ -144,6 +143,6 @@ public sealed class Pet : Entity<Guid>
             isVaccinated: isVaccinated,
             helpStatus: helpStatus);
         
-        return Result.Success(pet);
+        return pet;
     }
 }

@@ -32,45 +32,44 @@ public sealed class Volunteer : Entity<Guid>
         PhoneNumber = phoneNumber;
     }
 
-    public static Result<Volunteer> Create(string fullName, string email, string description, int experience,
+    public static Result<Volunteer, Error> Create(string fullName, string email, string description, int experience,
         string phoneNumber)
     {
-        if  (string.IsNullOrWhiteSpace(fullName))
-            return Result.Failure<Volunteer>("Volunteer name cannot be empty");
-
-        if (fullName.Length > Constants.VOLUNTEER_MAX_FULLNAME_LENGTH)
-            return Result.Failure<Volunteer>($"Volunteer name is greater than {Constants.VOLUNTEER_MAX_FULLNAME_LENGTH}");
+        if (string.IsNullOrWhiteSpace(fullName))
+            return Errors.General.ValidationNotNull("fullName");
         
+        if (fullName.Length > Constants.VOLUNTEER_MAX_FULLNAME_LENGTH)
+            return Errors.General.ValidationMaxLength("fullName", Constants.VOLUNTEER_MAX_FULLNAME_LENGTH);
         
         
         if (string.IsNullOrWhiteSpace(email))
-            return Result.Failure<Volunteer>("Volunteer email cannot be empty");
+            return Errors.General.ValidationNotNull("email");
         
         if (email.Length > Constants.VOLUNTEER_MAX_EMAIL_LENGTH)
-            return Result.Failure<Volunteer>($"Volunteer email length is greater than {Constants.VOLUNTEER_MAX_EMAIL_LENGTH}");
-        
+            return Errors.General.ValidationMaxLength("email", Constants.VOLUNTEER_MAX_EMAIL_LENGTH);
+
         if (!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-            return Result.Failure<Volunteer>("Invalid email address");
+            return Errors.General.ValidationInvalidFormat("email");
         
         
         
         if (string.IsNullOrWhiteSpace(description))
-            return Result.Failure<Volunteer>("Volunteer description cannot be empty");
+            return Errors.General.ValidationNotNull("description");
         
         if (description.Length > Constants.VOLUNTEER_MAX_DESCRIPTION_LENGTH)
-            return Result.Failure<Volunteer>("Volunteer description is too long");
+            return Errors.General.ValidationMaxLength("description",  Constants.VOLUNTEER_MAX_DESCRIPTION_LENGTH);
         
         
         
         if  (experience <= 0)
-            return Result.Failure<Volunteer>("Volunteer experience cannot be negative");
+            return Errors.General.ValidationNumberNegative("experience");
         
         if  (string.IsNullOrWhiteSpace(phoneNumber))
-            return Result.Failure<Volunteer>("Volunteer phone number cannot be empty");
+            return Errors.General.ValidationNotNull("phoneNumber");
         
         if (!Regex.IsMatch(phoneNumber, @"^\+?\d+$"))
-            return Result.Failure<Volunteer>("Phone number must contain only digits and '+'");
-
+            return Errors.General.ValidationInvalidFormat("phoneNumber");
+        
         var volunteer = new Volunteer(
             fullName: fullName,
             email: email,
@@ -78,6 +77,6 @@ public sealed class Volunteer : Entity<Guid>
             experience: experience,
             phoneNumber: phoneNumber);
         
-        return Result.Success(volunteer);
+        return volunteer;
     }
 }

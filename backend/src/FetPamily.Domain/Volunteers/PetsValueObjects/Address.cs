@@ -19,28 +19,44 @@ public record Address
         ApartmentNumber = apartmentNumber;
     }
 
-    public static Result<Address> Create(string city, string street, string building, int? apartmentNumber)
+    public static Result<Address, Error> Create(string city, string street, string building, int? apartmentNumber)
     {
         // regex: только буквы, дефисы и пробелы
-        if (string.IsNullOrWhiteSpace(city) 
-            || city.Length > Constants.ADDRESS_MAX_CITY_LENGTH 
-            || !Regex.IsMatch(city, @"^[a-zA-Zа-яА-ЯёЁ\s\-]+$"))
-            return Result.Failure<Address>("Invalid city");
+        if (string.IsNullOrWhiteSpace(city))
+            return Errors.General.ValidationNotNull("city");
+                
+        if (city.Length > Constants.ADDRESS_MAX_CITY_LENGTH)
+            return Errors.General.ValidationMaxLength("city", Constants.ADDRESS_MAX_CITY_LENGTH);
+
+        if (!Regex.IsMatch(city, @"^[a-zA-Zа-яА-ЯёЁ\s\-]+$"))
+            return Errors.General.ValidationInvalidFormat("city");
+        
         
         // regex: буквы, цифры, пробелы, дефисы
-        if (string.IsNullOrWhiteSpace(street) 
-            || street.Length > Constants.ADDRESS_MAX_STREET_LENGTH 
-            || !Regex.IsMatch(street, @"^[\wа-яА-ЯёЁ\s\-\.]+$"))
-            return Result.Failure<Address>("Invalid street");
+        if (string.IsNullOrWhiteSpace(street))
+            return Errors.General.ValidationNotNull("street");
+                
+        if (street.Length > Constants.ADDRESS_MAX_STREET_LENGTH)
+            return Errors.General.ValidationMaxLength("street", Constants.ADDRESS_MAX_STREET_LENGTH);
+
+        if (!Regex.IsMatch(street, @"^[\wа-яА-ЯёЁ\s\-\.]+$"))
+            return Errors.General.ValidationInvalidFormat("street");
+
         
         // буквы, цифры (напр. 12А, 5Б)
-        if (string.IsNullOrWhiteSpace(building) 
-            || building.Length > Constants.ADDRESS_MAX_BUILDING_LENGTH 
-            || !Regex.IsMatch(building, @"^[\wа-яА-ЯёЁ\-]+$"))
-            return Result.Failure<Address>("Invalid building number");
+        if (string.IsNullOrWhiteSpace(building))
+            return Errors.General.ValidationNotNull("building");
+                
+        if (building.Length > Constants.ADDRESS_MAX_BUILDING_LENGTH)
+            return Errors.General.ValidationMaxLength("building", Constants.ADDRESS_MAX_BUILDING_LENGTH);
+
+        if (!Regex.IsMatch(building, @"^[\wа-яА-ЯёЁ\-]+$"))
+            return Errors.General.ValidationInvalidFormat("building");
+        
+        
         
         if (apartmentNumber.HasValue && apartmentNumber.Value < 1)
-            return Result.Failure<Address>("Apartment number must be positive");
+            return Errors.General.ValidationGreaterThan("apartmentNumber", 0);
 
 
         return new Address(city, street, building, apartmentNumber);
