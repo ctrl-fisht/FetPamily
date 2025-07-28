@@ -1,4 +1,4 @@
-﻿namespace FetPamily.Domain.Pets;
+﻿namespace FetPamily.Domain.Volunteers.PetsValueObjects;
 
 public enum HelpStatus
 {

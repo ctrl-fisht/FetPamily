@@ -1,12 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
+using FetPamily.Domain.Shared;
 
-namespace FetPamily.Domain.Species;
+namespace FetPamily.Domain.Species.Entities;
 
 public sealed class Species : Entity<Guid>
 {
     private readonly List<Breed> _breeds = new List<Breed>();
+    public string Name { get; private set; }
     
-    public string Name { get; set; }
     public IReadOnlyList<Breed> Breeds => _breeds;
 
     private Species(Guid id, string name)
@@ -19,6 +20,9 @@ public sealed class Species : Entity<Guid>
     {
         if (string.IsNullOrWhiteSpace(name))
             return Result.Failure<Species>("Name cannot be empty");
+        
+        if (name.Length > Constants.SPECIES_MAX_NAME_LENGTH)
+            return Result.Failure<Species>($"Name cannot be longer than {Constants.SPECIES_MAX_NAME_LENGTH}");
         
         if (id == Guid.Empty)
             return Result.Failure<Species>("Guid cannot be empty");
