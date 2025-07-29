@@ -15,9 +15,12 @@ public static class Constants
     public const int PET_MAX_HEIGHT = 10000; // сантиметры
 
     // VOLUNTEER ENTITY
-    public const int VOLUNTEER_MAX_FULLNAME_LENGTH = 150;
+    public const int VOLUNTEER_MAX_NAME_LENGTH = 100;
+    public const int VOLUNTEER_MAX_SURNAME_LENGTH = 100;
     public const int VOLUNTEER_MAX_EMAIL_LENGTH = 320;
     public const int VOLUNTEER_MAX_DESCRIPTION_LENGTH = 2000;
+    public const int VOLUNTEER_MAX_EXPERIENCE = 100;
+    
 
     // PET ADDRESS VO
     public const int ADDRESS_MAX_CITY_LENGTH = 100;

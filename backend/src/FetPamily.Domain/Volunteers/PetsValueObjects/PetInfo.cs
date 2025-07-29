@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using FetPamily.Domain.Shared;
 
 namespace FetPamily.Domain.Volunteers.PetsValueObjects;
 
@@ -15,19 +16,19 @@ public record PetInfo
         Color = color;
     }
 
-    public static Result<PetInfo> Create(Guid speciesId, Guid breedId, string color)
+    public static Result<PetInfo, Error> Create(Guid speciesId, Guid breedId, string color)
     {
         if (speciesId == Guid.Empty)
-            return Result.Failure<PetInfo>("SpeciesId cannot be empty");
+            return Errors.General.ValidationNotNull("speciesId");
         
         if (breedId == Guid.Empty)
-            return Result.Failure<PetInfo>("BreedId cannot be empty");
-        
+            return Errors.General.ValidationNotNull("breedId");
+
         if (string.IsNullOrWhiteSpace(color))
-            return Result.Failure<PetInfo>("Color cannot be empty");
+            return Errors.General.ValidationNotNull("color");
 
         var petInfo = new PetInfo(speciesId, breedId, color);
 
-        return Result.Success<PetInfo>(petInfo);
+        return petInfo;
     }
 }

@@ -16,30 +16,30 @@ public sealed class Species : Entity<Guid>
         Name = name;
     }
 
-    public static Result<Species> Create(Guid id, string name)
+    public static Result<Species, Error> Create(Guid id, string name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return Result.Failure<Species>("Name cannot be empty");
+            return Errors.General.ValidationNotNull("name");
         
         if (name.Length > Constants.SPECIES_MAX_NAME_LENGTH)
-            return Result.Failure<Species>($"Name cannot be longer than {Constants.SPECIES_MAX_NAME_LENGTH}");
-        
+            return Errors.General.ValidationMaxLength("name", Constants.SPECIES_MAX_NAME_LENGTH);
+
         if (id == Guid.Empty)
-            return Result.Failure<Species>("Guid cannot be empty");
+            return Errors.General.ValidationNotNull("id");
         
         var species = new Species(
             id: id,
             name: name);
         
-        return Result.Success(species);
+        return species;
     }
 
-    public Result AddBreed(Breed breed)
+    public UnitResult<Error> AddBreed(Breed breed)
     {
         if (_breeds.Any(b => b.Id == breed.Id))
-            return Result.Failure<Breed>("Duplicate breed");
+            return Errors.General.AlreadyExist(breed.Id.ToString());
         
         _breeds.Add(breed);
-        return Result.Success();
+        return UnitResult.Success<Error>();
     }
 }

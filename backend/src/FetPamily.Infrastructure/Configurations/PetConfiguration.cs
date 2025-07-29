@@ -25,7 +25,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
 
             // phone_number regex check 
             tb.HasCheckConstraint("CK_pets_phone_number",
-                $"\"phone_number\" ~ '^\\+?\\d{{1,15}}$'");
+                "\"phone_number\" ~ '^\\+7\\d{10}$'");
 
             // dob < CURRENT_DATE
             tb.HasCheckConstraint("CK_pets_dob",
@@ -139,9 +139,12 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasColumnName("height")
             .IsRequired();
 
-        builder.Property(p => p.PhoneNumber)
-            .HasColumnName("phone_number")
-            .IsRequired();
+        builder.ComplexProperty(p => p.PhoneNumber, pnb =>
+            {
+                pnb.Property(pn => pn.Value)
+                    .HasColumnName("phone_number")
+                    .IsRequired();
+            });
         
         builder.Property(p => p.IsNeutered)
             .HasColumnName("is_neutered")

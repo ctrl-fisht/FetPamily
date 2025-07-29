@@ -1,4 +1,5 @@
-﻿using FetPamily.Domain.Shared;
+﻿using CSharpFunctionalExtensions;
+using FetPamily.Domain.Shared;
 using FetPamily.Domain.Volunteers.VolunteersValueObjects;
 using FetPamily.Domain.Volunteers.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 "\"experience\" >= 0");
 
             tb.HasCheckConstraint("CK_volunteers_phone_number",
-                $"\"phone_number\" ~ '^\\+?\\d{{1,15}}$'");
+                "\"phone_number\" ~ '^\\+7\\d{10}$'");
         });
 
         builder.HasKey(v => v.Id);
@@ -27,17 +28,28 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         builder.Property(v => v.Id)
             .HasColumnName("id")
             .IsRequired();
-        
-        builder.Property(v => v.FullName)
-            .HasColumnName("full_name")
-            .HasMaxLength(Constants.VOLUNTEER_MAX_FULLNAME_LENGTH)
-            .IsRequired();
 
-        builder.Property(v => v.Email)
-            .HasColumnName("email")
-            .HasMaxLength(Constants.VOLUNTEER_MAX_EMAIL_LENGTH)
-            .IsRequired();
+        builder.ComplexProperty(v => v.FullName, fnb =>
+        {
+            fnb.Property(fn => fn.Name)
+                .HasColumnName("name")
+                .IsRequired()
+                .HasMaxLength(Constants.VOLUNTEER_MAX_NAME_LENGTH);
+            
+            fnb.Property(fn => fn.Surname)
+                .HasColumnName("surname")
+                .IsRequired()
+                .HasMaxLength(Constants.VOLUNTEER_MAX_SURNAME_LENGTH);
+        });
 
+        builder.ComplexProperty(v => v.Email, eb =>
+        {
+            eb.Property(ea => ea.Value)
+                .HasColumnName("email")
+                .IsRequired()
+                .HasMaxLength(Constants.VOLUNTEER_MAX_EMAIL_LENGTH);
+        });
+           
         builder.Property(v => v.Description)
             .HasColumnName("description")
             .HasMaxLength(Constants.VOLUNTEER_MAX_DESCRIPTION_LENGTH);
@@ -45,9 +57,12 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         builder.Property(v => v.Experience)
             .HasColumnName("experience");
 
-        builder.Property(v => v.PhoneNumber)
-            .HasColumnName("phone_number")
-            .IsRequired();
+        builder.ComplexProperty(v => v.PhoneNumber, pnb =>
+            {
+                pnb.Property(pn => pn.Value)
+                    .HasColumnName("phone_number")
+                    .IsRequired();
+            });
 
         builder.OwnsOne(v => v.VolunteerDetails, vdb =>
         {

@@ -105,11 +105,6 @@ namespace FetPamily.Infrastructure.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("name");
 
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("phone_number");
-
                     b.Property<string>("TreatmentStatus")
                         .IsRequired()
                         .HasColumnType("text")
@@ -168,6 +163,16 @@ namespace FetPamily.Infrastructure.Migrations
                                 .HasColumnName("info_species_id");
                         });
 
+                    b.ComplexProperty<Dictionary<string, object>>("PhoneNumber", "FetPamily.Domain.Volunteers.Entities.Pet.PhoneNumber#PhoneNumber", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("phone_number");
+                        });
+
                     b.HasKey("Id");
 
                     b.HasIndex("VolunteerId");
@@ -184,7 +189,7 @@ namespace FetPamily.Infrastructure.Migrations
 
                             t.HasCheckConstraint("CK_pets_height", "\"height\" > 0 AND \"height\" <= 10000");
 
-                            t.HasCheckConstraint("CK_pets_phone_number", "\"phone_number\" ~ '^\\+?\\d{1,15}$'");
+                            t.HasCheckConstraint("CK_pets_phone_number", "\"phone_number\" ~ '^\\+7\\d{10}$'");
 
                             t.HasCheckConstraint("CK_pets_weight", "\"weight\" > 0 AND \"weight\" <= 100");
 
@@ -205,26 +210,47 @@ namespace FetPamily.Infrastructure.Migrations
                         .HasColumnType("character varying(2000)")
                         .HasColumnName("description");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(320)
-                        .HasColumnType("character varying(320)")
-                        .HasColumnName("email");
-
                     b.Property<int>("Experience")
                         .HasColumnType("integer")
                         .HasColumnName("experience");
 
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)")
-                        .HasColumnName("full_name");
+                    b.ComplexProperty<Dictionary<string, object>>("Email", "FetPamily.Domain.Volunteers.Entities.Volunteer.Email#EmailAddress", b1 =>
+                        {
+                            b1.IsRequired();
 
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("phone_number");
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(320)
+                                .HasColumnType("character varying(320)")
+                                .HasColumnName("email");
+                        });
+
+                    b.ComplexProperty<Dictionary<string, object>>("FullName", "FetPamily.Domain.Volunteers.Entities.Volunteer.FullName#FullName", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("name");
+
+                            b1.Property<string>("Surname")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("surname");
+                        });
+
+                    b.ComplexProperty<Dictionary<string, object>>("PhoneNumber", "FetPamily.Domain.Volunteers.Entities.Volunteer.PhoneNumber#PhoneNumber", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("phone_number");
+                        });
 
                     b.HasKey("Id");
 
@@ -234,7 +260,7 @@ namespace FetPamily.Infrastructure.Migrations
 
                             t.HasCheckConstraint("CK_volunteers_experience", "\"experience\" >= 0");
 
-                            t.HasCheckConstraint("CK_volunteers_phone_number", "\"phone_number\" ~ '^\\+?\\d{1,15}$'");
+                            t.HasCheckConstraint("CK_volunteers_phone_number", "\"phone_number\" ~ '^\\+7\\d{10}$'");
                         });
                 });
 
@@ -271,7 +297,7 @@ namespace FetPamily.Infrastructure.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("PetId");
 
-                            b1.OwnsMany("FetPamily.Domain.Volunteers.PetsValueObjects.PaymentDetail", "PaymentDetails", b2 =>
+                            b1.OwnsMany("FetPamily.Domain.Volunteers.SharedValueObjects.PaymentDetail", "PaymentDetails", b2 =>
                                 {
                                     b2.Property<Guid>("PaymentInfoPetId")
                                         .HasColumnType("uuid");
@@ -331,7 +357,34 @@ namespace FetPamily.Infrastructure.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("VolunteerId");
 
-                            b1.OwnsMany("FetPamily.Domain.Volunteers.VolunteersValueObjects.PaymentDetail", "PaymentDetails", b2 =>
+                            b1.OwnsMany("FetPamily.Domain.Volunteers.VolunteersValueObjects.SocialNetwork", "SocialNetworks", b2 =>
+                                {
+                                    b2.Property<Guid>("VolunteerDetailsVolunteerId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<int>("Id")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("integer");
+
+                                    b2.Property<string>("Link")
+                                        .IsRequired()
+                                        .HasColumnType("text")
+                                        .HasColumnName("soc_link");
+
+                                    b2.Property<string>("Name")
+                                        .IsRequired()
+                                        .HasColumnType("text")
+                                        .HasColumnName("soc_name");
+
+                                    b2.HasKey("VolunteerDetailsVolunteerId", "Id");
+
+                                    b2.ToTable("volunteers");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("VolunteerDetailsVolunteerId");
+                                });
+
+                            b1.OwnsMany("FetPamily.Domain.Volunteers.SharedValueObjects.PaymentDetail", "PaymentDetails", b2 =>
                                 {
                                     b2.Property<Guid>("VolunteerDetailsVolunteerId")
                                         .HasColumnType("uuid");
@@ -357,33 +410,6 @@ namespace FetPamily.Infrastructure.Migrations
                                         .HasMaxLength(100)
                                         .HasColumnType("character varying(100)")
                                         .HasColumnName("payment_value");
-
-                                    b2.HasKey("VolunteerDetailsVolunteerId", "Id");
-
-                                    b2.ToTable("volunteers");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("VolunteerDetailsVolunteerId");
-                                });
-
-                            b1.OwnsMany("FetPamily.Domain.Volunteers.VolunteersValueObjects.SocialNetwork", "SocialNetworks", b2 =>
-                                {
-                                    b2.Property<Guid>("VolunteerDetailsVolunteerId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<int>("Id")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("integer");
-
-                                    b2.Property<string>("Link")
-                                        .IsRequired()
-                                        .HasColumnType("text")
-                                        .HasColumnName("soc_link");
-
-                                    b2.Property<string>("Name")
-                                        .IsRequired()
-                                        .HasColumnType("text")
-                                        .HasColumnName("soc_name");
 
                                     b2.HasKey("VolunteerDetailsVolunteerId", "Id");
 
